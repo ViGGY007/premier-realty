@@ -13,8 +13,21 @@ export default function ChatButton() {
 
 Typebot.initBubble({
   typebot: "real-estate-lead-capture-2xld5zb",
-  theme: { button: { backgroundColor: "#C9A84C" } },
+  theme: { 
+    button: { backgroundColor: "#C9A84C" },
+  },
+  previewMessage: {
+    message: "Looking for a property? I can help! 👋",
+    autoShowDelay: 5000,
+  },
 });
+
+setTimeout(() => {
+  const typebotButton = document.querySelector('button[aria-label="Open chat"]') as HTMLButtonElement;
+  if (typebotButton) {
+    typebotButton.style.display = 'none';
+  }
+}, 2000);
 `;
     document.body.append(typebotInitScript);
 

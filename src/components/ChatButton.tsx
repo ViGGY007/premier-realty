@@ -1,33 +1,48 @@
 import { useEffect, useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 
-declare global {
-  interface Window {
-    typebotOpen?: () => void;
-  }
-}
-
 export default function ChatButton() {
   const [isVisible, setIsVisible] = useState(false);
+  const [typebotReady, setTypebotReady] = useState(false);
 
   useEffect(() => {
     const script = document.createElement("script");
     script.type = "module";
     script.innerHTML = `
       import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0/dist/web.js'
-      Typebot.initPopup({
+      Typebot.initBubble({
         typebot: "real-estate-lead-capture-2xld5zb",
-        autoShowDelay: 99999999,
+        theme: { 
+          button: { backgroundColor: "#C9A84C" },
+        },
       });
-      window.typebotOpen = () => Typebot.open();
+      window.typebotReady = true;
     `;
     document.body.appendChild(script);
-    setTimeout(() => setIsVisible(true), 2500);
+
+    // Wait for Typebot to load then hide its bubble
+    const interval = setInterval(() => {
+      const tb = document.querySelector('typebot-bubble');
+      if (tb) {
+        (tb as HTMLElement).style.cssText = 'position:fixed !important; bottom:-100px !important; opacity:0 !important; pointer-events:none !important;';
+        setTypebotReady(true);
+        clearInterval(interval);
+      }
+    }, 500);
+
+    setTimeout(() => setIsVisible(true), 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleClick = () => {
-    if (window.typebotOpen) {
-      window.typebotOpen();
+    // Find and click Typebot's actual button inside the bubble
+    const tb = document.querySelector('typebot-bubble');
+    if (tb) {
+      // Temporarily show it, click it, hide it again
+      (tb as HTMLElement).style.cssText = 'position:fixed !important; bottom:-100px !important; opacity:0 !important;';
+      const btn = tb.shadowRoot?.querySelector('button');
+      if (btn) btn.click();
     }
   };
 

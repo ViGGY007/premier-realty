@@ -11,21 +11,17 @@ export default function ChatButton() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Load Typebot script
     const script = document.createElement("script");
     script.type = "module";
     script.innerHTML = `
       import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0/dist/web.js'
-      Typebot.initBubble({
+      Typebot.initPopup({
         typebot: "real-estate-lead-capture-2xld5zb",
-        theme: { 
-          button: { backgroundColor: "#C9A84C" },
-        },
+        autoShowDelay: 99999999,
       });
       window.typebotOpen = () => Typebot.open();
     `;
     document.body.appendChild(script);
-
     setTimeout(() => setIsVisible(true), 2500);
   }, []);
 
